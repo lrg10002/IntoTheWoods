@@ -3,6 +3,7 @@ import os
 import json
 import sys
 import random
+import terminalsize
 
 last = 0
 
@@ -47,7 +48,8 @@ def choice(num):
 			delayPrint(node["S"][ridx])
 		else:
 			delayPrint(node["S"])
-		input("-> Press Enter to Continue <-")
+		print()
+		input("-> Press Enter to Continue <-".center(terminalsize.get_terminal_size()[0]))
 		clearLastLine()
 		clearScreen()
 
@@ -98,11 +100,14 @@ def choice(num):
 	choice(nexts[c])
 
 def titleSequence():
-	delayPrint(">>> Into the Woods <<<")
+	print()
+	delayPrint("\x1b[1m" + " Into the Woods ".center(terminalsize.get_terminal_size()[0]) + "\x1b[0m")
 	delayLine()
-	delayPrint("> A game made by Layne Gustafson <")
+	delayPrint("A game made by Layne Gustafson".center(terminalsize.get_terminal_size()[0]))
 	delayLine()
-	input("-> Press enter to start <-")
+	print("\x1b[5m", end="")
+	input("-> Press enter to start <-".center(terminalsize.get_terminal_size()[0]))
+	print("\x1b[0m", end="")
 	clearScreen()
 
 tree = {}
@@ -113,6 +118,7 @@ for storyFile in os.listdir(startDir):
 	info = json.load(open(os.path.join(startDir, storyFile), "r"))
 	for key in info:
 		tree[key] = storyFile
+
 
 clearScreen()
 titleSequence()

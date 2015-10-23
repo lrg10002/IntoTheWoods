@@ -41,11 +41,16 @@
 		"S": "You chew for one minute longer.",
 		"Q": "Now what do you do?",
 		"R": {
-			"Chew even more": "jawfallsoffbear"
+			"Chew even more": "jawfallsoffbear",
+			"Stop chewing": "stopchewingbear"
 		}
 	},
 	"jawfallsoffbear": {
 		"S": "You chew so much that your jaw falls off your face.",
+		"N": -1
+	},
+	"stopchewingbear": {
+		"S": "The bear becomes angry because you have stopped chewing.\n\nHe eats your face.",
 		"N": -1
 	},
 	"stateoftheunionbear": {
