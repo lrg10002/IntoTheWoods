@@ -1,47 +1,83 @@
 from time import sleep
+import os
+import json
+import sys
+import random
 
 last = 0
+
+def slowPrint(line, delay=0.03):
+	for i in range(0, len(line)):
+		print(line[i], end="")
+		sys.stdout.flush()
+		sleep(delay)
+	print()
+
+def clearScreen():
+	sys.stdout.write("\x1b[2J\x1b[H")
+	sys.stdout.flush()
+
+def delayPrint(line, delay=1):
+	sleep(delay)
+	slowPrint(line)
+
+def delayLine(delay=1):
+	sleep(delay)
+	print()
+
+def clearLastLine():
+	CURSOR_UP_ONE = '\x1b[1A'
+	ERASE_LINE = '\x1b[2K' #or 1k?
+	print(CURSOR_UP_ONE + ERASE_LINE + CURSOR_UP_ONE)
+	print()
+
+def clearLastLineNoNewline():
+	CURSOR_UP_ONE = '\x1b[1A'
+	ERASE_LINE = '\x1b[2K' #or 1k?
+	print(CURSOR_UP_ONE + ERASE_LINE + CURSOR_UP_ONE)
 
 def choice(num):
 	global last
 
-	print()
-	if tree[num].get("Statement") != None:
-		print(tree[num]["Statement"])
+	fc = json.load(open(os.path.join(startDir, tree[num]), "r"))
+	node = fc[num]
+	if node.get("S") != None:
+		if type(node.get("S")) is list:
+			ridx = random.randrange(0, len(node["S"]))
+			delayPrint(node["S"][ridx])
+		else:
+			delayPrint(node["S"])
 		input("-> Press Enter to Continue <-")
-		sleep(1)
-		print()
+		clearLastLine()
+		clearScreen()
 
-	if tree[num].get("Question") == None:
-		if tree[num]["Next"] == -1:
-			sleep(1)
-			print("[!] You have died! Game over!")
+	if node.get("Q") == None:
+		if node["N"] == -1:
+			delayPrint("[!] You have died! Game over!")
 			sleep(1.5)
 			return
-		if tree[num]["Next"] == -2:
-			sleep(1)
-			print("YOU WIN! YOU SURVIVED THE TERRIBLE FOREST!")
+		if node["N"] == -2:
+			delayPrint("YOU WIN! YOU SURVIVED THE TERRIBLE FOREST!")
 			sleep(1.5)
 			return
-		if tree[num]["Next"] == -3:
+		if node["N"] == -3:
 			choice(last)
 			return
-		choice(tree[num]["Next"])
+		choice(node["N"])
 		return
 
-	options = tree[num]["Responses"]
-	sleep(1)
-	print("[?] " + tree[num]["Question"])
+	options = node["R"]
+	delayPrint("[?] " + node["Q"])
 
 	inc = 0
 	nexts = []
 	statements = []
 	for option in options:
-		sleep(0.75)
-		print("\t{}: {}".format(inc, option))
+		delayPrint("\t{}: {}".format(inc, option), 0.75)
 		inc = inc + 1
 		nexts.append(options[option])
 		statements.append(option)
+	sleep(0.75)
 	while True:
 		try:
 			c = int(input("Choice: "))
@@ -51,75 +87,34 @@ def choice(num):
 			last = num
 		except ValueError:
 			print("Please enter a valid choice!")
+			sleep(1)
+			clearLastLineNoNewline()
+			clearLastLineNoNewline()
 		else:
 			break
-	sleep(1)
-	print()
-	sleep(1)
-	print("==> " + picked)
-	sleep(1)
+	delayLine()
+	delayPrint("==> " + picked)
+	delayLine()
 	choice(nexts[c])
 
+def titleSequence():
+	delayPrint(">>> Into the Woods <<<")
+	delayLine()
+	delayPrint("> A game made by Layne Gustafson <")
+	delayLine()
+	input("-> Press enter to start <-")
+	clearScreen()
 
-tree = {
-	"shutup": {
-		"Statement": "Oh, just shut up!", #todo: implement multiple random statements
-		"Next": -3
-	},
+tree = {}
 
-	0: {
-		"Question": "You are walking through the forest when you trip on a sleeping bear. What do you do?",
-		"Responses": {"Eat the bear":"eatbear", "Caress the bear":"caressbear", "Chew the bear":"chewbear"}
-	},
-	"eatbear": {
-		"Statement": "Before you can eat the bear, the bear eats you!",
-		"Next": -1
-	},
-	"caressbear": {
-		"Statement": "The bear wakes up to the gentle touch of your strong yet supple hands. He enjoys it immensely.",
-		"Question": "What do you do to the bear next?",
-		"Responses": {
-			"Eat the bear": "eatbear", 
-			"Engage in rompus crossfit training with the bear": "crossfitbear", 
-			"Share your fruitsnacks with the bear": "fruitsnacksbear"
-		}
-	},
-	"crossfitbear": {
-		"Statement": "The bear, having just been awakened, is in no mood for crossfit and decapitates you.",
-		"Next": -1
-	},
-	"fruitsnacksbear": {
-		"Statement": "The bear greatly enjoys your fruitsnacks. He eats all of them.",
-		"Next": -2
-	},
-	"chewbear": {
-		"Statement": "Suprisingly, the bear enjoys the sensation of your teeth gnawing at his gnarly coat.",
-		"Question": "What's next? You can't possibly chew on the bear forever!",
-		"Responses": {
-			"Or can you?": "shutup",
-			"Keep chewing, just for one minute longer": "chewbearlonger",
-			"Recite to the bear your impersonation of President Clinton's 1997 State of the Union Address": "stateoftheunionbear"
-		}
-	},
-	"chewlonger": {
-		"Statement": "You chew for one minute longer.",
-		"Question": "Now what do you do?",
-		"Responses": {
-			"Chew even more": "jawfallsoffbear"
-		}
-	},
-	"jawfallsoffbear": {
-		"Statement": "You chew so much that your jaw falls off your face.",
-		"Next": -1
-	},
-	"stateoftheunionbear": {
-		"Statement": "You: \"Mr. Speaker, Mr. Vice President, members of the 105th Congress, distinguished guests, my fellow Americans: I think I should start by saying thanks for inviting me back.\"\nBear: \"...\"\nYou: \"I come before you tonight with a challenge as great as any in our peacetime history – and a plan of action to meet that challenge, to prepare our people for the bold new world of the 21st century.\"\nBear: \"What is this shit?!\"\nYou: \"...\"",
-		"Next": "bearpunts"
-	},
-	"bearpunts": {
-		"Statement": "The bear punts you to China.",
-		"Next": -1
-	}
-}
+startDir = os.path.join(os.getcwd(), "story")
 
-choice(0)
+for storyFile in os.listdir(startDir):
+	info = json.load(open(os.path.join(startDir, storyFile), "r"))
+	for key in info:
+		tree[key] = storyFile
+
+clearScreen()
+titleSequence()
+
+choice("0")

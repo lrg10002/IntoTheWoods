@@ -1,0 +1,59 @@
+{
+	"0": {
+		"Q": "You are walking through the forest when you trip on a sleeping bear. What do you do?",
+		"R": {
+			"Eat the bear":"eatbear", 
+			"Caress the bear":"caressbear", 
+			"Chew the bear":"chewbear"
+		}
+	},
+	"eatbear": {
+		"S": "Before you can eat the bear, the bear eats you!",
+		"N": -1
+	},
+	"caressbear": {
+		"S": "The bear wakes up to the gentle touch of your strong yet supple hands. He enjoys it immensely.",
+		"Q": "What do you do to the bear next?",
+		"R": {
+			"Eat the bear": "eatbear", 
+			"Engage in rompus crossfit training with the bear": "crossfitbear", 
+			"Share your fruitsnacks with the bear": "fruitsnacksbear"
+		}
+	},
+	"crossfitbear": {
+		"S": "The bear, having just been awakened, is in no mood for crossfit and decapitates you.",
+		"N": -1
+	},
+	"fruitsnacksbear": {
+		"S": "The bear greatly enjoys your fruitsnacks. He eats all of them.",
+		"N": -2
+	},
+	"chewbear": {
+		"S": "Suprisingly, the bear enjoys the sensation of your teeth gnawing at his gnarly coat.",
+		"Q": "What's next? You can't possibly chew on the bear forever!",
+		"R": {
+			"Or can you?": "shutup",
+			"Keep chewing, just for one minute longer": "chewlongerbear",
+			"Recite to the bear your impersonation of President Clinton's 1997 State of the Union Address": "stateoftheunionbear"
+		}
+	},
+	"chewlongerbear": {
+		"S": "You chew for one minute longer.",
+		"Q": "Now what do you do?",
+		"R": {
+			"Chew even more": "jawfallsoffbear"
+		}
+	},
+	"jawfallsoffbear": {
+		"S": "You chew so much that your jaw falls off your face.",
+		"N": -1
+	},
+	"stateoftheunionbear": {
+		"S": "You: \"Mr. Speaker, Mr. Vice President, members of the 105th Congress, distinguished guests, my fellow Americans: I think I should start by saying thanks for inviting me back.\"\nBear: \"...\"\nYou: \"I come before you tonight with a challenge as great as any in our peacetime history – and a plan of action to meet that challenge, to prepare our people for the bold new world of the 21st century.\"\nBear: \"What is this shit?!\"\nYou: \"...\"",
+		"N": "bearpunts"
+	},
+	"bearpunts": {
+		"S": "The bear punts you to China.",
+		"N": -1
+	}
+}
