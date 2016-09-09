@@ -1,9 +1,12 @@
+#!/usr/bin/env python3
+
 from time import sleep
 import os
 import json
 import sys
 import random
 import terminalsize
+from termios import tcflush, TCIOFLUSH
 
 last = 0
 
@@ -13,6 +16,13 @@ def slowPrint(line, delay=0.03):
 		sys.stdout.flush()
 		sleep(delay)
 	print()
+
+def enableInput():
+	tcflush(sys.stdin, TCIOFLUSH)
+	os.system("stty echo")
+
+def disableInput():
+	os.system("stty -echo")
 
 def clearScreen():
 	sys.stdout.write("\x1b[2J\x1b[H")
@@ -49,7 +59,12 @@ def choice(num):
 		else:
 			delayPrint(node["S"])
 		print()
+
+		enableInput()
+		print()
 		input("-> Press Enter to Continue <-".center(terminalsize.get_terminal_size()[0]))
+		disableInput()
+
 		clearLastLine()
 		clearScreen()
 
@@ -80,6 +95,8 @@ def choice(num):
 		nexts.append(options[option])
 		statements.append(option)
 	sleep(0.75)
+
+	enableInput()
 	while True:
 		try:
 			c = int(input("Choice: "))
@@ -94,6 +111,8 @@ def choice(num):
 			clearLastLineNoNewline()
 		else:
 			break
+	disableInput()
+
 	delayLine()
 	delayPrint("==> " + picked)
 	delayLine()
@@ -106,7 +125,12 @@ def titleSequence():
 	delayPrint("A game made by Layne Gustafson".center(terminalsize.get_terminal_size()[0]))
 	delayLine()
 	print("\x1b[5m", end="")
+
+	enableInput()
+	print()
 	input("-> Press enter to start <-".center(terminalsize.get_terminal_size()[0]))
+	disableInput()
+	
 	print("\x1b[0m", end="")
 	clearScreen()
 
@@ -119,6 +143,7 @@ for storyFile in os.listdir(startDir):
 	for key in info:
 		tree[key] = storyFile
 
+disableInput()
 
 clearScreen()
 titleSequence()
